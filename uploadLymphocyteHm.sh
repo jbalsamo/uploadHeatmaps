@@ -7,6 +7,7 @@ database="quip"
 port="27017"
 FILE=""
 HOST=""
+errcode=0
 
 
 while [ -n "$1" ]
@@ -37,8 +38,10 @@ shift
  
 done
 
-if [ -z "${HOST}"]
-  exit 1;;
+if [ -z "${HOST}" ] || [ -z "${FILE}" ]
+then
+  echo "Missing required parameters: Exit error 1"
+  exit 1
 fi
 
 TYPE=${database}
