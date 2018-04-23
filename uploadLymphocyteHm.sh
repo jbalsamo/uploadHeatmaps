@@ -5,13 +5,15 @@
 # Set Default variables.
 database="quip"
 port="27017"
+FILE=""
+HOST=""
 
 
 while [ -n "$1" ]
 # while loop starts
 do
 case "$1" in
--h) host="$2"
+-h) HOST="$2"
     shift;;
 -p) port="$2"
     shift ;;
@@ -35,12 +37,16 @@ shift
  
 done
 
-TYPE="quip"
+if [ -z "${HOST}"]
+  exit 1;;
+fi
+
+TYPE=${database}
 HEATMAP="./${FILE}/heatmap_${FILE}.json"
 META="./${FILE}/meta_${FILE}.json"
 
 
-mongoimport --port 27017 --host localhost -d ${TYPE} -c objects ${HEATMAP}
-mongoimport --port 27017 --host localhost -d ${TYPE} -c metadata ${META}
+echo "mongoimport --port ${port} --host ${HOST} -d ${TYPE} -c objects ${HEATMAP}"
+echo "mongoimport --port ${port} --host ${HOST} -d ${TYPE} -c metadata ${META}"
 
 exit 0
