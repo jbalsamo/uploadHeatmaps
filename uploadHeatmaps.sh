@@ -1,11 +1,11 @@
 #!/bin/bash
-# bash uploadLymphHm.sh <options>
+# bash uploadHeatmaps.sh <options>
 # Authors: Alina Jasniewski, Joseph Balsamo
 
 # Functions
 # function: usage(brief)
 function usage() {
-    echo "Usage: $ ./uploadLymphHm.sh [options] -h <host> -f <filename>"
+    echo "Usage: $ ./uploadHeatmaps.sh [options] -h <host> -f <filename>"
     if [ $1 == false ]
     then
       echo "  Options:"
