@@ -16,6 +16,7 @@ function usage() {
       echo ""
       echo "    --help Display full help usage."
       echo "  Notes: requires mongoDB client tools installed on running server"
+      echo "  Notes: If '-f' parameter is *, it must be in quotes."
     fi
 }
 # end functions
@@ -65,11 +66,13 @@ then
 fi
 
 TYPE=${database}
-HEATMAP="./${FILE}/heatmap_${FILE}.json"
-META="./${FILE}/meta_${FILE}.json"
 
+for filename in ${FILE}/heatmap_*.json ; do
+  mongoimport --port ${port} --host ${HOST} -d ${TYPE} -c objects ${filename}
+done
 
-echo "mongoimport --port ${port} --host ${HOST} -d ${TYPE} -c objects ${HEATMAP}"
-echo "mongoimport --port ${port} --host ${HOST} -d ${TYPE} -c metadata ${META}"
+for filename in ${FILE}/meta_*.json ; do
+  mongoimport --port ${port} --host ${HOST} -d ${TYPE} -c metadata ${filename}
+done
 
 exit 0
