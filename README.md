@@ -14,6 +14,6 @@ Each directory "_filename_", has under it four files to import into quip.
 There is also an svs image file for that filename in each directory.  To import the images in bulk, use the instructions [here](https://github.com/SBU-BMI/quip_distro/wiki/how-to-load-image-svs-file-into-quip-application).
 
 Here is the directory tree for several images:
-![https://jbalsamo.github.io/mycdn/images/dirtree.jpeg]
+![Directory Tree](https://jbalsamo.github.io/mycdn/images/dirtree.jpeg)
 
 ## Usage
