@@ -35,10 +35,22 @@ do
 case "$1" in
 -h) HOST="$2"
     shift;;
--p) port="$2"
+-P) port="$2"
     shift ;;
- 
--f) FILE=${2}
+
+-p) passw="$2"
+    shift ;;
+
+-c) collection="$2"
+    shift ;;
+
+-u) uname="$2"
+    shift ;;
+
+-i) in="$2"
+    shift ;;
+
+-o) out=${2}
     shift;;
 
 -d) database=${2}
@@ -58,8 +70,7 @@ shift
  
 done
 
-if [ -z "${HOST}" ] || [ -z "${FILE}" ]
-then
+if [ -z "${HOST}" ] || [ -z "${in}" ] || [ -z "${out}" ] || [ -z "${uname}" ] then
   echo "Missing required parameters"
   usage true
   exit 1
