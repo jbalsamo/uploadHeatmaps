@@ -149,7 +149,7 @@ function generateDoc(pdata,filename){
       "image":{  
         "subject_id":"${fileTemps[filename].provenance.image.subject_id}",
         "case_id":"${fileTemps[filename].provenance.image.case_id.substring(8)}",
-        "slide": "${slide_id}", 
+        "slide": ${slide_id}, 
         "specimen": "", 
         "study": ""
       },

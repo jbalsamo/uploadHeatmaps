@@ -22,10 +22,9 @@ function usage() {
 # end functions
 
 # Set Default variables.
-database="quip"
+database="camic"
 port="27017"
-FILE=""
-HOST=""
+HOST="ca-mongo"
 errcode=0
 brief=true
 
@@ -76,14 +75,12 @@ if [ -z "${HOST}" ] || [ -z "${in}" ] || [ -z "${out}" ] || [ -z "${uname}" ] th
   exit 1
 fi
 
-TYPE=${database}
+# Convert heatmap data in the 'in' folder into uploadable json in the 'out' folder.
+# todo
 
-for filename in ${FILE}/heatmap_*.json ; do
-  mongoimport --port ${port} --host ${HOST} -d ${TYPE} -c objects ${filename}
-done
-
-for filename in ${FILE}/meta_*.json ; do
-  mongoimport --port ${port} --host ${HOST} -d ${TYPE} -c metadata ${filename}
+# Import into the quip database
+for filename in ${out}/*.json ; do
+  mongoimport --port ${port} --host ${HOST} -d ${database} -c ${collection} ${filename}
 done
 
 exit 0
