@@ -43,8 +43,8 @@ while(argv.length > 0) {
 
 var inputFolder = './input';
 var outputFolder = './output';
-inputFolder = !clio.input ? './input':1;
-outputFolder = !clio.output ? './output':1;
+inputFolder = !clio.input ? './input':clio.input;
+outputFolder = !clio.output ? './output':clio.output;
 
 url = clio.host;
 
