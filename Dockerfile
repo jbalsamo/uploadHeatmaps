@@ -36,7 +36,7 @@ ADD root/.scripts /root/.scripts
 
 COPY convert_heatmaps.js /usr/local/bin/
 COPY uploadHeatmaps.sh /usr/local/bin/
-RUN  	chmod 0755 /usr/local/bin/uploadHeatmaps.sh
+RUN chmod 0775 /usr/local/bin/uploadHeatmaps.sh
 
 # Set environment variables.
 ENV HOME /root
