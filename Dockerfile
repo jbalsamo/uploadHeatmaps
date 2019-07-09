@@ -45,5 +45,7 @@ ENV HOME /root
 # Define working directory.
 WORKDIR /root
 
+ENTRYPOINT /bin/bash
+
 # Define default command.
-CMD ["bash"]
+CMD ["/bin/bash"]
