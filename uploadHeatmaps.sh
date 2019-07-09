@@ -59,7 +59,7 @@ case "$1" in
     usage false
     exit 0
  
-break ;;
+break ;
  
 *) usage true ;;
  
@@ -69,14 +69,15 @@ shift
  
 done
 
-if [ -z "${HOST}" ] || [ -z "${in}" ] || [ -z "${passw}" ] || [ -z "${uname}" ] then
+if [ -z "${HOST}" ] || [ -z "${in}" ] || [ -z "${passw}" ] || [ -z "${uname}" ] 
+then
   echo "Missing required parameters"
   usage true
   exit 1
 fi
 
 # Convert heatmap data in the 'in' folder into uploadable json in the 'out' folder.
-node convert_heatmaps.js -h ${HOST} -c ${collection} -i ${in} -o ${out} -u ${uname} -p ${passw}
+node /usr/local/bin/convert_heatmaps.js -h ${HOST} -c ${collection} -i ${in} -o ${out} -u ${uname} -p ${passw}
 
 # Import into the quip database
 for filename in ${out}/*.json ; do
