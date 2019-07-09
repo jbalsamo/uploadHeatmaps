@@ -32,6 +32,8 @@ while [ -n "$1" ]
 # while loop starts
 do
 case "$1" in
+-q) QHOST="$2"
+    shift;;
 -h) HOST="$2"
     shift;;
 -P) port="$2"
@@ -67,7 +69,7 @@ shift
  
 done
 
-if [ -z "${HOST}" ] || [ -z "${in}" ] || [ -z "${passw}" ] || [ -z "${uname}" ] 
+if [ -z "${QHOST}" ] || [ -z "${in}" ] || [ -z "${passw}" ] || [ -z "${uname}" ] 
 then
   echo "Missing required parameters"
   usage true
@@ -75,7 +77,7 @@ then
 fi
 
 # Convert heatmap data in the 'in' folder into uploadable json in the 'out' folder.
-node /usr/local/bin/convert_heatmaps.js -h ${HOST} -c ${collection} -i ${in} -o ${out} -u ${uname} -p ${passw}
+node /usr/local/bin/convert_heatmaps.js -h ${QHOST} -c ${collection} -i ${in} -o ${out} -u ${uname} -p ${passw}
 
 # Import into the quip database
 for filename in ${out}/*.json ; do
