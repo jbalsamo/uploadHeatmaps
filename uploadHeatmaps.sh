@@ -57,11 +57,9 @@ case "$1" in
 
 --help)  
     usage false
-    exit 0
- 
-break ;
- 
-*) usage true ;;
+    exit 0;;
+
+*) usage true;; 
  
 esac
  
