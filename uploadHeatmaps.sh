@@ -81,7 +81,7 @@ node /usr/local/bin/convert_heatmaps.js -h ${QHOST} -c ${collection} -i ${in} -o
 
 # Import into the quip database
 for filename in ${out}/*.json ; do
-  mongoimport --port ${port} --host ${HOST} -d ${database} -c ${collection} ${filename}
+  mongoimport --port ${port} --host ${HOST} -d ${database} -c heatmap ${filename}
 done
 
 exit 0
