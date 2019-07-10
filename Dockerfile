@@ -45,7 +45,7 @@ ENV HOME /root
 # Define working directory.
 WORKDIR /root
 
-ENTRYPOINT /bin/bash
+ENTRYPOINT tail -f /dev/null
 
 # Define default command.
-CMD ["/bin/bash"]
+CMD ["tail -f /dev/null"]
