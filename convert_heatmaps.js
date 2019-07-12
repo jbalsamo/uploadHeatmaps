@@ -48,17 +48,29 @@ outputFolder = !clio.output ? './output':clio.output;
 
 url = clio.host;
 
+// Read and Parse the manifest.
 const fileTemps = {};
-
-let remainder = 0;
-fs.readdirSync(inputFolder).forEach(fileName => {
-  const ext = path.extname(`${inputFolder}/${fileName}`);
-  if(ext!=='.json') return;
-  fileTemps[fileName] = null;
-  convert(fileName)
+const manifest = [];
+const mfData = []
+manifest = fs.readFileSync(inputFolder + '/manifest.csv').toString().split('\n');
+manifest.splice(0,1);
+manifest.forEach((line)=>{
+  if(line != '') {
+    let fileInfo = line.split(',');
+    mfData.push({ file: fileInfo[0],study_id:fileInfo[1],subject_id:fileInfo[2],image_id:fileInfo[3] });
+  }
 });
 
-function convert(filename){
+let remainder = 0;
+mfData.forEach(mfItem => {
+  const ext = path.extname(`${inputFolder}/${mfItem.file}`);
+  if(ext!=='.json') return;
+  fileTemps[fileName] = null;
+  convert(fileName,mfItem)
+});
+
+
+function convert(filename,metadata){
 
   let lineno = 0;
   let data = [];
@@ -86,9 +98,10 @@ function convert(filename){
     	record.bbox[1],
     	...record.properties.multiheat_param.metric_array]);
   }).on('close',()=>{
-    var study_id = fileTemps[filename].provenance.analysis.study_id;
-    var image_id = fileTemps[filename].provenance.image.case_id.substring(8);
-    var subject_id = fileTemps[filename].provenance.image.subject_id;
+    var study_id = metadata.study_id;
+    var image_id = metadata.image_id;
+    var subject_id = metadata.subject_id;
+
     url = encodeURI(url);
     
     var options = {
@@ -110,7 +123,7 @@ function convert(filename){
       res.on('end', function() {
         let result = JSON.parse(body);
         slide_id = result[0].nid[0].value;
-        const content = generateDoc(data,filename);
+        const content = generateDoc(data,filename,metadata);
         if(!fs.existsSync(outputFolder)) fs.mkdirSync(outputFolder);
         fs.writeFile(`${outputFolder}/NEW_${filename}`, content, function(err) {
           if (err) throw err;
@@ -147,14 +160,14 @@ function generateDoc(pdata,filename){
   return `{
     "provenance":{  
       "image":{  
-        "subject_id":"${fileTemps[filename].provenance.image.subject_id}",
-        "case_id":"${fileTemps[filename].provenance.image.case_id.substring(8)}",
+        "subject_id":"${metadata.subject_id}",
+        "case_id":"${metadata.image_id}",
         "slide": "${slide_id}", 
         "specimen": "", 
         "study": ""
       },
       "analysis":{  
-        "study_id":"TCGA-BRCA",
+        "study_id":"${metadata.study_id}",
         "computation":"heatmap",
         "size": [${width},${height}],
         "fields":${JSON.stringify(fields)},
