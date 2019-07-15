@@ -80,11 +80,11 @@ then
 fi
 if [ -z "${in}" ]
 then
-  in="/data/xfer/input"
+  in="/mnt/data/xfer/input"
 fi
 if [ -z "${out}" ]
 then
-  out="/data/xfer/output"
+  out="/mnt/data/xfer/output"
 fi
 if [ -z "${port}" ]
 then

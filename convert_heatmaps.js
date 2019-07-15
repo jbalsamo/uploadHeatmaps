@@ -41,10 +41,10 @@ while(argv.length > 0) {
   }
 }
 
-var inputFolder = '/data/xfer/input';
-var outputFolder = '/data/xfer/output';
-inputFolder = !clio.input ? '/data/xfer/input':clio.input;
-outputFolder = !clio.output ? '/data/xfer/output':clio.output;
+var inputFolder = '/mnt/data/xfer/input';
+var outputFolder = '/mnt/data/xfer/output';
+inputFolder = !clio.input ? '/mnt/data/xfer/input':clio.input;
+outputFolder = !clio.output ? '/mnt/data/xfer/output':clio.output;
 
 url = clio.host;
 
@@ -62,6 +62,8 @@ manifest.forEach((line)=>{
 });
 
 let remainder = 0;
+
+// For each file process the conversion.
 mfData.forEach(mfItem => {
   const ext = path.extname(`${inputFolder}/${mfItem.file}`);
   if(ext!=='.json') return;
