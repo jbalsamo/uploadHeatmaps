@@ -177,7 +177,7 @@ function generateDoc(pdata,filename,metadata){
         "source":"computer",
         "setting" : {
           "mode" : "gradient",
-          "field" : ${fields[0].name}
+          "field" : "${fields[0].name}"
         }
       }
     },
