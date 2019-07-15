@@ -5,14 +5,17 @@
 # Functions
 # function: usage(brief)
 function usage() {
-    echo "Usage: $ ./uploadHeatmaps.sh [options] -h <host> -f <filename>"
+    echo "Usage: $ ./uploadHeatmaps.sh [options] -c <pathDB_collection> -u <username> -p <password>"
     if [ $1 == false ]
     then
       echo "  Options:"
-      echo "    -f <filename>: filename of the data to be loaded (this parameter required)"
-      echo "    -h <host>: ip or hostname of database (this parameter required)"
-      echo "    -d <database name> (default: quip)"
-      echo "    -p <database port> (default: 27017)"
+      echo "    -c <pathDB_collection>: PathDB Collection for heatmaps being loaded (this parameter required)"
+      echo "    -u <username>: PathDB username (this parameter required)"
+      echo "    -p <password>: PathDB password (this parameter required)"
+      echo "    -q <host>: ip or hostname of PathDB Server (default: quip-pathdb)"
+      echo "    -h <host>: ip or hostname of database (default: ca-mongo)"
+      echo "    -d <database name> (default: camic)"
+      echo "    -P <database port> (default: 27017)"
       echo ""
       echo "    --help Display full help usage."
       echo "  Notes: requires mongoDB client tools installed on running server"
@@ -81,7 +84,7 @@ then
 fi
 if [ -z "${out}" ]
 then
-  out="data/xfer/output"
+  out="/data/xfer/output"
 fi
 if [ -z "${port}" ]
 then
