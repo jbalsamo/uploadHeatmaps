@@ -34,7 +34,7 @@ brief=true
 while [ -n "$1" ]
 # while loop starts
 do
-  # Process commandline flags
+  # Process command-line flags
   case "$1" in
     -q) qhost="$2"
         shift;;
