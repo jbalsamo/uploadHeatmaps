@@ -41,10 +41,10 @@ while(argv.length > 0) {
   }
 }
 
-var inputFolder = './input';
-var outputFolder = './output';
-inputFolder = !clio.input ? './input':clio.input;
-outputFolder = !clio.output ? './output':clio.output;
+var inputFolder = '/data/xfer/input';
+var outputFolder = '/data/xfer/output';
+inputFolder = !clio.input ? '/data/xfer/input':clio.input;
+outputFolder = !clio.output ? '/data/xfer/output':clio.output;
 
 url = clio.host;
 
@@ -65,8 +65,8 @@ let remainder = 0;
 mfData.forEach(mfItem => {
   const ext = path.extname(`${inputFolder}/${mfItem.file}`);
   if(ext!=='.json') return;
-  fileTemps[fileName] = null;
-  convert(fileName,mfItem)
+  fileTemps[mfItem.file] = null;
+  convert(mfItem.file,mfItem);
 });
 
 
@@ -142,7 +142,7 @@ function convert(filename,metadata){
   });
 }
 
-function generateDoc(pdata,filename){
+function generateDoc(pdata,filename,metadata){
   const [x,y,x1,y1] = fileTemps[filename].bbox;
   const width = x1 - x;
   const height = y1 - y;
