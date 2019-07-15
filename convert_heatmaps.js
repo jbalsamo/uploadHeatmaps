@@ -174,7 +174,7 @@ function generateDoc(pdata,filename,metadata){
         "size": [${width},${height}],
         "fields":${JSON.stringify(fields)},
         "execution_id":"${fileTemps[filename].provenance.analysis.execution_id}",
-        "source":"computer".
+        "source":"computer",
         "setting" : {
           "mode" : "gradient",
           "field" : ${fields[0].name}
