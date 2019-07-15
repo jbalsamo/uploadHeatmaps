@@ -46,6 +46,8 @@ do
         shift ;;
     -c) collection="$2"
         shift ;;
+    -m) manifest="$2"
+        shift ;;
     -u) uname="$2"
         shift ;;
     -i) in="$2"
@@ -78,6 +80,10 @@ if [ -z "${qhost}" ]
 then
   qhost="quip-pathdb"
 fi
+if [ -z "${manifest}" ]
+then
+  manifest="manifest.csv"
+fi
 if [ -z "${in}" ]
 then
   in="/mnt/data/xfer/input"
@@ -96,7 +102,7 @@ then
 fi
 
 # Convert heatmap data in the 'in' folder into uploadable json in the 'out' folder.
-node /usr/local/bin/convert_heatmaps.js -h ${qhost} -c ${collection} -i ${in} -o ${out} -u ${uname} -p ${passw}
+node /usr/local/bin/convert_heatmaps.js -h ${qhost} -c ${collection} -m ${manifest} -i ${in} -o ${out} -u ${uname} -p ${passw}
 
 # Import into the quip database
 for filename in ${out}/*.json ; do

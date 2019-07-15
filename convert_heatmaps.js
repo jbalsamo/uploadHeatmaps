@@ -23,6 +23,9 @@ while(argv.length > 0) {
     case '-c':
       clio.collection = encodeURI(argv.shift().trim());
       break;
+    case '-m':
+      clio.manifest = argv.shift().trim();
+      break;
     case '-u':
       clio.username = argv.shift().trim();
       break;
@@ -52,7 +55,7 @@ url = clio.host;
 const fileTemps = {};
 const manifest = [];
 const mfData = []
-manifest = fs.readFileSync(inputFolder + '/manifest.csv').toString().split('\n');
+manifest = fs.readFileSync(inputFolder + '/' + clio.manifest).toString().split('\n');
 manifest.splice(0,1);
 manifest.forEach((line)=>{
   if(line != '') {
