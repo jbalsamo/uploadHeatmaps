@@ -5,74 +5,109 @@
 # Functions
 # function: usage(brief)
 function usage() {
-    echo "Usage: $ ./uploadHeatmaps.sh [options] -h <host> -f <filename>"
+    echo "Usage: $ ./uploadHeatmaps.sh [options] -c <pathDB_collection> -u <username> -p <password>"
     if [ $1 == false ]
     then
       echo "  Options:"
-      echo "    -f <filename>: filename of the data to be loaded (this parameter required)"
-      echo "    -h <host>: ip or hostname of database (this parameter required)"
-      echo "    -d <database name> (default: quip)"
-      echo "    -p <database port> (default: 27017)"
+      echo "    -c <pathDB_collection>: PathDB Collection for heatmaps being loaded (this parameter required)"
+      echo "    -u <username>: PathDB username (this parameter required)"
+      echo "    -p <password>: PathDB password (this parameter required)"
+      echo "    -i <input_folder>: Folder where heatmaps are loaded from (default: /mnt/data/xfer/input)"
+      echo "    -o <output_folder>: Folder where converted heatmaps are imported from (default: /mnt/data/xfer/output)"
+      echo "    -q <host>: ip or hostname of PathDB Server (default: quip-pathdb)"
+      echo "    -h <host>: ip or hostname of database (default: ca-mongo)"
+      echo "    -d <database name> (default: camic)"
+      echo "    -P <database port> (default: 27017)"
       echo ""
       echo "    --help Display full help usage."
       echo "  Notes: requires mongoDB client tools installed on running server"
-      echo "  Notes: If '-f' parameter is *, it must be in quotes."
     fi
 }
 # end functions
 
 # Set Default variables.
-database="quip"
+database="camic"
 port="27017"
-FILE=""
-HOST=""
+HOST="ca-mongo"
 errcode=0
 brief=true
 
 while [ -n "$1" ]
 # while loop starts
 do
-case "$1" in
--h) HOST="$2"
-    shift;;
--p) port="$2"
-    shift ;;
- 
--f) FILE=${2}
-    shift;;
-
--d) database=${2}
-    shift;;
-
---help)  
-    usage false
-    exit 0
- 
-break ;;
- 
-*) usage true ;;
- 
-esac
- 
-shift
- 
+  # Process command-line flags
+  case "$1" in
+    -q) qhost="$2"
+        shift;;
+    -h) host="$2"
+        shift;;
+    -P) port="$2"
+        shift ;;
+    -p) passw="$2"
+        shift ;;
+    -c) collection="$2"
+        shift ;;
+    -m) manifest="$2"
+        shift ;;
+    -u) uname="$2"
+        shift ;;
+    -i) in="$2"
+        shift ;;
+    -o) out=${2}
+        shift;;
+    -d) database=${2}
+        shift;;
+    --help)  
+        usage false
+        exit 0;;
+    *) usage true;; 
+  esac
+  shift
 done
 
-if [ -z "${HOST}" ] || [ -z "${FILE}" ]
+if [ -z "${collection}" ] || [ -z "${passw}" ] || [ -z "${uname}" ] 
 then
   echo "Missing required parameters"
   usage true
   exit 1
 fi
 
-TYPE=${database}
+# Set default values for unprovided options.
+if [ -z "${host}" ]
+then
+  host="ca-mongo"
+fi
+if [ -z "${qhost}" ]
+then
+  qhost="quip-pathdb"
+fi
+if [ -z "${manifest}" ]
+then
+  manifest="manifest.csv"
+fi
+if [ -z "${in}" ]
+then
+  in="/mnt/data/xfer/input"
+fi
+if [ -z "${out}" ]
+then
+  out="/mnt/data/xfer/output"
+fi
+if [ -z "${port}" ]
+then
+  port="27017"
+fi
+if [ -z "${database}" ]
+then
+  database="camic"
+fi
 
-for filename in ${FILE}/heatmap_*.json ; do
-  mongoimport --port ${port} --host ${HOST} -d ${TYPE} -c objects ${filename}
-done
+# Convert heatmap data in the 'in' folder into uploadable json in the 'out' folder.
+node --max_old_space_size=16384 /usr/local/bin/convert_heatmaps.js -h ${qhost} -c ${collection} -m ${manifest} -i ${in} -o ${out} -u ${uname} -p ${passw}
 
-for filename in ${FILE}/meta_*.json ; do
-  mongoimport --port ${port} --host ${HOST} -d ${TYPE} -c metadata ${filename}
+# Import into the quip database
+for filename in ${out}/*.json ; do
+  mongoimport --port ${port} --host ${host} -d ${database} -c heatmap ${filename}
 done
 
 exit 0
