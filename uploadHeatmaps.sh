@@ -12,6 +12,8 @@ function usage() {
       echo "    -c <pathDB_collection>: PathDB Collection for heatmaps being loaded (this parameter required)"
       echo "    -u <username>: PathDB username (this parameter required)"
       echo "    -p <password>: PathDB password (this parameter required)"
+      echo "    -i <input_folder>: Folder where heatmaps are loaded from (default: /mnt/data/xfer/input)"
+      echo "    -o <output_folder>: Folder where converted heatmaps are imported from (default: /mnt/data/xfer/output)"
       echo "    -q <host>: ip or hostname of PathDB Server (default: quip-pathdb)"
       echo "    -h <host>: ip or hostname of database (default: ca-mongo)"
       echo "    -d <database name> (default: camic)"
@@ -19,7 +21,6 @@ function usage() {
       echo ""
       echo "    --help Display full help usage."
       echo "  Notes: requires mongoDB client tools installed on running server"
-      echo "  Notes: If '-f' parameter is *, it must be in quotes."
     fi
 }
 # end functions
@@ -102,7 +103,7 @@ then
 fi
 
 # Convert heatmap data in the 'in' folder into uploadable json in the 'out' folder.
-node /usr/local/bin/convert_heatmaps.js -h ${qhost} -c ${collection} -m ${manifest} -i ${in} -o ${out} -u ${uname} -p ${passw}
+node --max_old_space_size=16384 /usr/local/bin/convert_heatmaps.js -h ${qhost} -c ${collection} -m ${manifest} -i ${in} -o ${out} -u ${uname} -p ${passw}
 
 # Import into the quip database
 for filename in ${out}/*.json ; do

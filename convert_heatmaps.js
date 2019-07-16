@@ -53,7 +53,7 @@ url = clio.host;
 
 // Read and Parse the manifest.
 const fileTemps = {};
-const manifest = [];
+var manifest = [];
 const mfData = []
 manifest = fs.readFileSync(inputFolder + '/' + clio.manifest).toString().split('\n');
 manifest.splice(0,1);
@@ -108,14 +108,14 @@ function convert(filename,metadata){
     var subject_id = metadata.subject_id;
 
     url = encodeURI(url);
-    
+  
     var options = {
       host: url,
       port: 80,
       path: '/idlookup/' + clio.collection + '/' + study_id + '/' + subject_id + '/' + image_id + '?_format=json',
       // authentication headers
       headers: {
-        // Authorization: 'Basic YWRtaW46Ymx1ZWNoZWVzZTIwMTg=',
+        // Authorization: 'Basic <calculated key>',
         Authorization: 'Basic ' + Buffer.from(clio.username + ':' + clio.passw).toString('base64')
       }   
     };
