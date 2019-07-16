@@ -35,5 +35,3 @@ Usage: $ ./uploadHeatmaps.sh [options] -c <pathDB_collection> -u <username> -p <
 ```
 
 Depending on the number of images and their resolution it may take some time to complete.  Do not stop the process until it completes.
-
-## Container Version
