@@ -60,7 +60,7 @@ manifest.splice(0,1);
 manifest.forEach((line)=>{
   if(line != '') {
     let fileInfo = line.split(',');
-    mfData.push({ file: fileInfo[0],study_id:fileInfo[1],subject_id:fileInfo[2],image_id:fileInfo[3] });
+    mfData.push({ file: path.resolve(inputFolder + '/' +fileInfo[0]),study_id:fileInfo[1],subject_id:fileInfo[2],image_id:fileInfo[3] });
   }
 });
 
@@ -86,7 +86,7 @@ function convert(filename,metadata){
 
   // read file
   const myInterface = readline.createInterface({
-    input: fs.createReadStream(`${inputFolder}/${filename}`)
+    input: fs.createReadStream(filename)
   });
 
   remainder++;
@@ -127,10 +127,11 @@ function convert(filename,metadata){
       });
       res.on('end', function() {
         let result = JSON.parse(body);
+        let basename = path.basename(filename);
         slide_id = result[0].nid[0].value;
         const content = generateDoc(data,filename,metadata);
         if(!fs.existsSync(outputFolder)) fs.mkdirSync(outputFolder);
-        fs.writeFile(`${outputFolder}/NEW_${filename}`, content, function(err) {
+        fs.writeFile(`${outputFolder}/NEW_${basename}`, content, function(err) {
           if (err) throw err;
           remainder--;
           console.log(`${filename} completed`);
