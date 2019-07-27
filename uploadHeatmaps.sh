@@ -1,34 +1,30 @@
 #!/bin/bash
+#---------------------------------------------------
 # bash uploadHeatmaps.sh <options>
-# Authors: Joseph Balsamo
+# Description: This script manages the conversion and
+#              upload of heatmaps to a containerized
+#              pathdb instance of quip.
+# Author(s): Joseph Balsamo
+#---------------------------------------------------
 
-#-----------------------------------------------------------------------
-# Functions
-#-----------------------------------------------------------------------
+#---------------------------------------------------
+# Source Function Libraries
+#---------------------------------------------------
+source helpers.sh
+source readpass.sh
 
-#-----------------------------------------------------------------------
-# Function: chk_opt($2)
-# Description: Takes an argument and determines if it is a flag instead of an parameter value
-#-----------------------------------------------------------------------
-function chk_opt() {
-  # Check the first char of the option passed 
-  checkc="$(echo $1 | head -c 1)"
+#---------------------------------------------------
+# Function Definitions
+#---------------------------------------------------
 
-  if [ $checkc == "-" ]
-  then
-    echo 'true'
-  else
-    echo 'false'
-  fi
-}
-# End chk_opt
-#-----------------------------------------------------------------------
-
-
-#-----------------------------------------------------------------------
+#---------------------------------------------------
 # Function: usage(brief)
-# Description: Display help message.  When true is passed it will show a brief version showing the bare minimum flags needed.
-#-----------------------------------------------------------------------
+# Description: Display help message.  When true is passed 
+#              it will show a brief version showing the 
+#              bare minimum flags needed.
+# parameters: brief
+# usage: usage [true | false]
+#---------------------------------------------------
 function usage() {
     echo "Usage: $ uploadHeatmaps.sh [options] -c <pathDB_collection>"
     if [ $1 == false ]
@@ -47,10 +43,12 @@ function usage() {
     fi
 }
 #-----------------------------------------------------------------------
+# End usage
+#-----------------------------------------------------------------------
 
-#-----------------------------------------------------------------------
-# end functions
-#-----------------------------------------------------------------------
+#---------------------------------------------------
+# End Function Definitions
+#---------------------------------------------------
 
 #-----------------------------------------------------------------------
 # Main Script
@@ -161,16 +159,8 @@ done
 # End of While
 
 # Request username and password for upload.
-if [ -z "${uname}" ] 
-then
-  echo -n "Username: "
-  read uname
-fi
-if [ -z "${passw}" ] 
-then
-  echo -n "Password: "
-  read -s passw
-fi
+uname="$(getPrompt 'Username:')"
+passw="$(getPass 'Password:')"
 
 if [ -z "${collection}" ]  
 then
