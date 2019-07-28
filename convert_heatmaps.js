@@ -56,6 +56,11 @@ const fileTemps = {};
 var manifest = [];
 const mfData = []
 manifest = fs.readFileSync(inputFolder + '/' + clio.manifest).toString().split('\n');
+// Exit with error if manifest file is empty
+if (manifest.length <= 1) {
+  console.error("Error: Empty manifest file");
+  process.exit(1001);
+}
 manifest.splice(0,1);
 manifest.forEach((line)=>{
   if(line != '') {
