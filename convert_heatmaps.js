@@ -89,6 +89,12 @@ function convert(filename,metadata){
   let fields = [];
   let ranges = [0,1];
 
+  try {
+    fs.accessSync(filename,fs.F_OK);
+  } catch(e) {
+    console.log(e.message);
+    process.exit(30);
+  }
   // read file
   const myInterface = readline.createInterface({
     input: fs.createReadStream(filename)
