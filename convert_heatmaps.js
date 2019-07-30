@@ -59,7 +59,7 @@ manifest = fs.readFileSync(inputFolder + '/' + clio.manifest).toString().split('
 // Exit with error if manifest file is empty
 if (manifest.length <= 1) {
   console.error("Error: Empty manifest file");
-  process.exit(1001);
+  process.exit(50);
 }
 manifest.splice(0,1);
 manifest.forEach((line)=>{
@@ -93,7 +93,7 @@ function convert(filename,metadata){
     fs.accessSync(filename,fs.F_OK);
   } catch(e) {
     console.log(e.message);
-    process.exit(30);
+    process.exit(51);
   }
   // read file
   const myInterface = readline.createInterface({
