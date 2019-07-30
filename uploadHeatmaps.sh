@@ -159,11 +159,6 @@ do
 done
 # End of While
 
-# Request username and password for upload.
-uname="$(getPrompt 'Username:')"
-passw="$(getPass 'Password:')"
-echo 
-
 if [ -z "${collection}" ]  
 then
   echo "Missing required parameter"
@@ -202,16 +197,29 @@ then
 fi
 
 # Check that input and output folders exist.  
-if [ ! -f $in ]
+if [ ! -d $in ]
 then
   echo "Error: Input folder does not exist."
   exit 2
 fi
-if [ ! -f $out ]
+if [ ! -d $out ]
 then
   echo "Error: Output folder does not exist."
   exit 3
 fi
+
+# Check that manifest file exists
+if [ ! -f "${in}/${manifest}" ]
+then
+  echo "Error: Manifest does not exist."
+  exit 2
+fi
+
+# Request username and password for upload.
+uname="$(getPrompt 'Username:')"
+passw="$(getPass 'Password:')"
+echo 
+echo
 
 # Verify that PathDB Server is reachable using current username/password combo
 ret_code="$(curl -Is -u ${uname}:${passw} http://${qhost}/ | head -1  | awk '{ print $2 }')"
@@ -224,10 +232,12 @@ fi
 # Convert heatmap data in the 'in' folder into uploadable json in the 'out' folder.
 node --max_old_space_size=16384 /usr/local/bin/convert_heatmaps.js -h ${qhost} -c ${collection} -m ${manifest} -i ${in} -o ${out} -u ${uname} -p ${passw}
 exitStatus=$?
+console.log($exitStatus);
 # Check to see conversion process succeded.
-if [[ $exitStatus == 0 ]]
+if [[ $exitStatus -eq 0 ]]
 then
   # Import into the quip database
+  console.log('Importing data')
   for filename in ${out}/*.json ; do
     mongoimport --port ${port} --host ${host} -d ${database} -c heatmap ${filename}
   done

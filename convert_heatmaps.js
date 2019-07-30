@@ -31,6 +31,8 @@ var outputFolder = '/mnt/data/xfer/output';
 // Main Program
 //--------------------------------------------------------------
 
+console.log('Beginning conversion');
+
 // Parse command-line args
 while(argv.length > 0) {
   element = argv.shift().trim();
@@ -73,6 +75,8 @@ var manifest = [];
 const mfData = []
 manifest = fs.readFileSync(inputFolder + '/' + clio.manifest).toString().split('\n');
 
+console.log('Reading manifest file.');
+
 // Exit with error if manifest file is empty
 if (manifest.length <= 1) {
   console.error("Error: Empty manifest file");
@@ -97,7 +101,7 @@ mfData.forEach(mfItem => {
 });
 
 // Exit with a normal completion.
-process.exit(0);
+// process.exit(0);
 
 //--------------------------------------------------------------
 // End of Main Program
@@ -130,6 +134,9 @@ function convert(filename,metadata){
     console.log(e.message);
     process.exit(51);
   }
+
+  console.log('Reading file');
+
   // read file
   const myInterface = readline.createInterface({
     input: fs.createReadStream(filename)
@@ -196,9 +203,8 @@ function convert(filename,metadata){
       res.on('error', function(e) {
           console.log("Got error: " + e.message);
       });
-      console.log('Get Ended');
     });
-
+    console.log('Get Ended');
   });
 }
 
