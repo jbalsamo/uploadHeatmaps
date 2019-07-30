@@ -1,5 +1,17 @@
-//convert.js
-//
+//--------------------------------------------------------------
+// Name: convert_heatmaps.js
+// Description: Given the parameters this script converts the
+//              old heatmap format for loading into a 3.x or >
+//              pathdb quip instance. Parameters have been error
+//              checked by this point and sill be correct.
+// Author(s):  Ryan Birmingham, Joseph Balsamo
+//--------------------------------------------------------------
+
+
+//--------------------------------------------------------------
+// Constants and Variables 
+//--------------------------------------------------------------
+
 const http = require('http');
 const readline = require('readline');
 const path = require('path')
@@ -12,6 +24,12 @@ var clio = {};
 var slide_id = "";
 var dummy = argv.shift();
 var dummy = argv.shift();
+var inputFolder = '/mnt/data/xfer/input';
+var outputFolder = '/mnt/data/xfer/output';
+
+//--------------------------------------------------------------
+// Main Program
+//--------------------------------------------------------------
 
 // Parse command-line args
 while(argv.length > 0) {
@@ -44,8 +62,6 @@ while(argv.length > 0) {
   }
 }
 
-var inputFolder = '/mnt/data/xfer/input';
-var outputFolder = '/mnt/data/xfer/output';
 inputFolder = !clio.input ? '/mnt/data/xfer/input':clio.input;
 outputFolder = !clio.output ? '/mnt/data/xfer/output':clio.output;
 
@@ -56,6 +72,7 @@ const fileTemps = {};
 var manifest = [];
 const mfData = []
 manifest = fs.readFileSync(inputFolder + '/' + clio.manifest).toString().split('\n');
+
 // Exit with error if manifest file is empty
 if (manifest.length <= 1) {
   console.error("Error: Empty manifest file");
@@ -79,9 +96,26 @@ mfData.forEach(mfItem => {
   convert(mfItem.file,mfItem);
 });
 
+// Exit with a normal completion.
+process.exit(0);
 
+//--------------------------------------------------------------
+// End of Main Program
+//--------------------------------------------------------------
+
+//--------------------------------------------------------------
+// Function Declarations
+//--------------------------------------------------------------
+
+//--------------------------------------------------------------
+// Function: convert
+// Description: This reads in the data from all heatmap files of
+//              a prediction run and creates a 3.x style import
+//              file to be loaded by the calling script.
+// Parameters: filename:string, metadata: object
+// Returns: Undefined
+//--------------------------------------------------------------
 function convert(filename,metadata){
-
   let lineno = 0;
   let data = [];
   let size = {};
@@ -89,6 +123,7 @@ function convert(filename,metadata){
   let fields = [];
   let ranges = [0,1];
 
+  // Check to verify the file exists
   try {
     fs.accessSync(filename,fs.F_OK);
   } catch(e) {
@@ -130,7 +165,8 @@ function convert(filename,metadata){
         Authorization: 'Basic ' + Buffer.from(clio.username + ':' + clio.passw).toString('base64')
       }   
     };
-    //this is the call
+
+    // this is the call to retrieve the slides unique identifier from pathDB
     request = http.get(options, function(res){
       var body = "";
       res.on('data', function(data) {
@@ -139,7 +175,14 @@ function convert(filename,metadata){
       res.on('end', function() {
         let result = JSON.parse(body);
         let basename = path.basename(filename);
+        // Check if no results are returned.
+        if(result == []) {
+          console.log('Error: No data for ' + image_id);
+          process.exit(50);
+        }
+        // Set slide_id for the given parameters above.
         slide_id = result[0].nid[0].value;
+        // Make the new heatmap JSON Doc
         const content = generateDoc(data,filename,metadata);
         if(!fs.existsSync(outputFolder)) fs.mkdirSync(outputFolder);
         fs.writeFile(`${outputFolder}/NEW_${basename}`, content, function(err) {
@@ -159,6 +202,13 @@ function convert(filename,metadata){
   });
 }
 
+//--------------------------------------------------------------
+// Function: generateDoc
+// Description: This takes the data from convert and produces a
+//              json document to write out to the import file.
+// Parameters: pdata:array of objects,filename:string, metadata: object
+// Returns: JSON Document for heatmap
+//--------------------------------------------------------------
 function generateDoc(pdata,filename,metadata){
   const [x,y,x1,y1] = fileTemps[filename].bbox;
   const width = x1 - x;
@@ -199,3 +249,7 @@ function generateDoc(pdata,filename,metadata){
     "data":${JSON.stringify(pdata)}
   }`;
 }
+
+//--------------------------------------------------------------
+// End of Function Declarations
+//--------------------------------------------------------------

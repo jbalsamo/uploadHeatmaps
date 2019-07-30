@@ -221,10 +221,18 @@ fi
 
 # Convert heatmap data in the 'in' folder into uploadable json in the 'out' folder.
 node --max_old_space_size=16384 /usr/local/bin/convert_heatmaps.js -h ${qhost} -c ${collection} -m ${manifest} -i ${in} -o ${out} -u ${uname} -p ${passw}
+exitStatus=$?
+# Check to see conversion process succeded.
+if [[ $exitStatus == 0 ]]
+then
+  # Import into the quip database
+  for filename in ${out}/*.json ; do
+    mongoimport --port ${port} --host ${host} -d ${database} -c heatmap ${filename}
+  done
+else
+  rm -f ${out}/*
+  exit $exitStatus
+fi
 
-# Import into the quip database
-for filename in ${out}/*.json ; do
-  mongoimport --port ${port} --host ${host} -d ${database} -c heatmap ${filename}
-done
-
+# exit normally
 exit 0

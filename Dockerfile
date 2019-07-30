@@ -40,6 +40,7 @@ COPY helpers.sh /usr/local/bin/
 COPY readpass.sh /usr/local/bin/
 RUN chmod 0775 /usr/local/bin/uploadHeatmaps.sh
 RUN mkdir /mnt/data
+RUN mkdir /heatmaps
 
 # Set environment variables.
 ENV HOME /root
