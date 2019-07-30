@@ -35,6 +35,7 @@ function usage() {
       echo "    -o, --output <output_folder>: Folder where converted heatmaps are imported from (default: /mnt/data/xfer/output)"
       echo "    -q, --quip-host <host>: ip or hostname of PathDB Server (default: quip-pathdb)"
       echo "    -h, --data-host <host>: ip or hostname of database (default: ca-mongo)"
+      echo "    -m, --manifest <manifest name> (default: manifest.csv)"
       echo "    -d, --database <database name> (default: camic)"
       echo "    -p, --port <database port> (default: 27017)"
       echo ""
