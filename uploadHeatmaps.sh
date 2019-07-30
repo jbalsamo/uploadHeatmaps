@@ -162,6 +162,7 @@ done
 # Request username and password for upload.
 uname="$(getPrompt 'Username:')"
 passw="$(getPass 'Password:')"
+echo 
 
 if [ -z "${collection}" ]  
 then
