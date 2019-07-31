@@ -232,8 +232,7 @@ fi
 # Convert heatmap data in the 'in' folder into uploadable json in the 'out' folder.
 node --max_old_space_size=16384 /usr/local/bin/convert_heatmaps.js -h ${qhost} -c ${collection} -m ${manifest} -i ${in} -o ${out} -u ${uname} -p ${passw}
 exitStatus=$?
-console.log($exitStatus);
-# Check to see conversion process succeded.
+# Check to see conversion process succeeded.
 if [[ $exitStatus -eq 0 ]]
 then
   # Import into the quip database
