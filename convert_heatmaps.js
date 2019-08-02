@@ -135,8 +135,6 @@ function convert(filename,metadata){
     process.exit(51);
   }
 
-  console.log('Reading file');
-
   // read file
   const myInterface = readline.createInterface({
     input: fs.createReadStream(filename)
@@ -183,7 +181,7 @@ function convert(filename,metadata){
         let result = JSON.parse(body);
         let basename = path.basename(filename);
         // Check if no results are returned.
-        if(result == []) {
+        if(result == [] || !result) {
           console.log('Error: No data for ' + image_id);
           process.exit(50);
         }
