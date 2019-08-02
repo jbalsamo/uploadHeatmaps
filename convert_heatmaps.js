@@ -24,8 +24,8 @@ var clio = {};
 var slide_id = "";
 var dummy = argv.shift();
 var dummy = argv.shift();
-var inputFolder = '/mnt/data/xfer/input';
-var outputFolder = '/mnt/data/xfer/output';
+var inputFolder = '/mnt/data/heatmaps/input';
+var outputFolder = '/mnt/data/heatmaps/output';
 
 //--------------------------------------------------------------
 // Main Program
@@ -64,8 +64,8 @@ while(argv.length > 0) {
   }
 }
 
-inputFolder = !clio.input ? '/mnt/data/xfer/input':clio.input;
-outputFolder = !clio.output ? '/mnt/data/xfer/output':clio.output;
+inputFolder = !clio.input ? '/mnt/data/heatmaps/input':'/mnt/data/heatmaps/' + clio.input;
+outputFolder = !clio.output ? '/mnt/data/heatmaps/output':'/mnt/data/heatmaps/' + clio.output;
 
 url = clio.host;
 
@@ -131,7 +131,7 @@ function convert(filename,metadata){
   try {
     fs.accessSync(filename,fs.F_OK);
   } catch(e) {
-    console.log(e.message);
+    console.error(e.message);
     process.exit(51);
   }
 
@@ -182,7 +182,7 @@ function convert(filename,metadata){
         let basename = path.basename(filename);
         // Check if no results are returned.
         if(result == [] || !result) {
-          console.log('Error: No data for ' + image_id);
+          console.error('Error: No data for ' + image_id);
           process.exit(50);
         }
         // Set slide_id for the given parameters above.
@@ -199,10 +199,10 @@ function convert(filename,metadata){
         });
       });
       res.on('error', function(e) {
-          console.log("Got error: " + e.message);
+          console.error("Error: " + e.message);
       });
     });
-    console.log('Get Ended');
+    console.log('Conversion Completed.');
   });
 }
 
