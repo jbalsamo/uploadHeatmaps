@@ -11,24 +11,23 @@ Under the input directory "_import folder_", with the heatmap files, you need to
 To load the current input files with a manifest named "manifest.csv":
 
 ```bash
-[ root@b93a23bb7fa1:~ ]$ uploadHeatmaps.sh -c <PathDB Collection> -u <user_name> -p <password>
+[ root@b93a23bb7fa1:~ ]$ uploadHeatmaps.sh -c <PathDB Collection> [option]
 ```
 
 For the full usage info type:
 
 ```bash
 bash-3.2$ ~/uploadHeatmaps/uploadHeatmaps.sh --help
-Usage: $ ./uploadHeatmaps.sh [options] -c <pathDB_collection> -u <username> -p <password>
+Usage: $ uploadHeatmaps.sh [options] -c <pathDB_collection>
   Options:
-    -c <pathDB_collection>: PathDB Collection for heatmaps being loaded (this parameter required)
-    -u <username>: PathDB username (this parameter required)
-    -p <password>: PathDB password (this parameter required)
-    -i <input_folder>: Folder where heatmaps are loaded from (default: /mnt/data/xfer/input)
-    -o <output_folder>: Folder where converted heatmaps are imported from (default: /mnt/data/xfer/output)
-    -q <host>: ip or hostname of PathDB Server (default: quip-pathdb)
-    -h <host>: ip or hostname of database (default: ca-mongo)
-    -d <database name> (default: camic)
-    -P <database port> (default: 27017)
+    -c, --collection <pathDB_collection>: PathDB Collection for heatmaps (*this parameter required)
+    -i, --input <input_folder>: Folder where heatmaps are loaded from (default: /mnt/data/xfer/input)
+    -o, --output <output_folder>: Folder where converted heatmaps are imported from (default: /mnt/data/xfer/output)
+    -q, --quip-host <host>: ip or hostname of PathDB Server (default: quip-pathdb)
+    -h, --data-host <host>: ip or hostname of database (default: ca-mongo)
+    -m, --manifest <manifest name> (default: manifest.csv)
+    -d, --database <database name> (default: camic)
+    -p, --port <database port> (default: 27017)
 
     --help Display full help usage.
   Notes: requires mongoDB client tools installed on running server
@@ -36,4 +35,3 @@ Usage: $ ./uploadHeatmaps.sh [options] -c <pathDB_collection> -u <username> -p <
 
 Depending on the number of images and their resolution it may take some time to complete.  Do not stop the process until it completes.
 
-## Container Version

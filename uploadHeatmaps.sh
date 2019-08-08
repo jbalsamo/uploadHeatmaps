@@ -181,11 +181,11 @@ then
 fi
 if [ -z "${in}" ]
 then
-  in="/mnt/data/xfer/input"
+  in="/mnt/data/heatmaps/input"
 fi
 if [ -z "${out}" ]
 then
-  out="/mnt/data/xfer/output"
+  out="/mnt/data/heatmaps/output"
 fi
 if [ -z "${port}" ]
 then
@@ -197,19 +197,19 @@ then
 fi
 
 # Check that input and output folders exist.  
-if [ ! -d $in ]
+if [ ! -d "/mnt/data/heatmaps/${in}" ]
 then
   echo "Error: Input folder does not exist."
   exit 2
 fi
-if [ ! -d $out ]
+if [ ! -d "/mnt/data/heatmaps/${out}" ]
 then
   echo "Error: Output folder does not exist."
   exit 3
 fi
 
 # Check that manifest file exists
-if [ ! -f "${in}/${manifest}" ]
+if [ ! -f "/mnt/data/heatmaps/${in}/${manifest}" ]
 then
   echo "Error: Manifest does not exist."
   exit 2
