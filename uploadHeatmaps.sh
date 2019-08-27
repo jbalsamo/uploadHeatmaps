@@ -1,29 +1,59 @@
 #!/bin/bash
+#---------------------------------------------------
 # bash uploadHeatmaps.sh <options>
-# Authors: Alina Jasniewski, Joseph Balsamo
+# Description: This script manages the conversion and
+#              upload of heatmaps to a containerized
+#              pathdb instance of quip.
+# Author(s): Joseph Balsamo
+#---------------------------------------------------
 
-# Functions
-# function: usage(brief)
+#---------------------------------------------------
+# Source Function Libraries
+#---------------------------------------------------
+source helpers.sh
+source readpass.sh
+
+#---------------------------------------------------
+# Function Definitions
+#---------------------------------------------------
+
+#---------------------------------------------------
+# Function: usage(brief)
+# Description: Display help message.  When true is passed 
+#              it will show a brief version showing the 
+#              bare minimum flags needed.
+# parameters: brief
+# usage: usage [true | false]
+#---------------------------------------------------
 function usage() {
-    echo "Usage: $ ./uploadHeatmaps.sh [options] -c <pathDB_collection> -u <username> -p <password>"
+    echo "Usage: $ uploadHeatmaps.sh [options] -c <pathDB_collection>"
     if [ $1 == false ]
     then
       echo "  Options:"
-      echo "    -c <pathDB_collection>: PathDB Collection for heatmaps being loaded (this parameter required)"
-      echo "    -u <username>: PathDB username (this parameter required)"
-      echo "    -p <password>: PathDB password (this parameter required)"
-      echo "    -i <input_folder>: Folder where heatmaps are loaded from (default: /mnt/data/xfer/input)"
-      echo "    -o <output_folder>: Folder where converted heatmaps are imported from (default: /mnt/data/xfer/output)"
-      echo "    -q <host>: ip or hostname of PathDB Server (default: quip-pathdb)"
-      echo "    -h <host>: ip or hostname of database (default: ca-mongo)"
-      echo "    -d <database name> (default: camic)"
-      echo "    -P <database port> (default: 27017)"
+      echo "    -c, --collection <pathDB_collection>: PathDB Collection for heatmaps (*this parameter required)"
+      echo "    -i, --input <input_folder>: Folder where heatmaps are loaded from (default: /mnt/data/xfer/input)"
+      echo "    -o, --output <output_folder>: Folder where converted heatmaps are imported from (default: /mnt/data/xfer/output)"
+      echo "    -q, --quip-host <host>: ip or hostname of PathDB Server (default: quip-pathdb)"
+      echo "    -h, --data-host <host>: ip or hostname of database (default: ca-mongo)"
+      echo "    -m, --manifest <manifest name> (default: manifest.csv)"
+      echo "    -d, --database <database name> (default: camic)"
+      echo "    -p, --port <database port> (default: 27017)"
       echo ""
       echo "    --help Display full help usage."
       echo "  Notes: requires mongoDB client tools installed on running server"
     fi
 }
-# end functions
+#-----------------------------------------------------------------------
+# End usage
+#-----------------------------------------------------------------------
+
+#---------------------------------------------------
+# End Function Definitions
+#---------------------------------------------------
+
+#-----------------------------------------------------------------------
+# Main Script
+#-----------------------------------------------------------------------
 
 # Set Default variables.
 database="camic"
@@ -32,42 +62,106 @@ HOST="ca-mongo"
 errcode=0
 brief=true
 
+# Loop through all command-line arguments.
 while [ -n "$1" ]
 # while loop starts
 do
   # Process command-line flags
+  # Start Case
   case "$1" in
-    -q) qhost="$2"
-        shift;;
-    -h) host="$2"
-        shift;;
-    -P) port="$2"
-        shift ;;
-    -p) passw="$2"
-        shift ;;
-    -c) collection="$2"
-        shift ;;
-    -m) manifest="$2"
-        shift ;;
-    -u) uname="$2"
-        shift ;;
-    -i) in="$2"
-        shift ;;
-    -o) out=${2}
-        shift;;
-    -d) database=${2}
-        shift;;
+    -q | --quip-host) 
+        opterr="$(chk_opt ${2})"
+        if [ $opterr ==  'true' ]
+        then
+          echo "Error: Missing parameter."
+          exit 5
+        else
+          qhost="$2"
+          shift
+        fi;;
+    -h | --data-host) 
+        opterr="$(chk_opt ${2})"
+        if [ $opterr ==  'true' ]
+        then
+          echo "Error: Missing parameter."
+          exit 5
+        else
+          host="$2"
+          shift
+        fi;;
+    -p | --port) 
+        opterr="$(chk_opt ${2})"
+        if [ $opterr ==  'true' ]
+        then
+          echo "Error: Missing parameter."
+          exit 5
+        else
+          port="$2"
+          shift
+        fi;;
+    -c | --collection) 
+        opterr="$(chk_opt ${2})"
+        if [ $opterr ==  'true' ]
+        then
+          echo "Error: Missing parameter."
+          exit 5
+        else
+          collection="$2"
+          shift
+        fi;;
+    -m | --manifest) 
+        opterr="$(chk_opt ${2})"
+        if [ $opterr ==  'true' ]
+        then
+          echo "Error: Missing parameter."
+          exit 5
+        else
+          manifest="$2"
+          shift
+        fi;;
+    -i | --input) 
+        opterr="$(chk_opt ${2})"
+        if [ $opterr ==  'true' ]
+        then
+          echo "Error: Missing parameter."
+          exit 5
+        else
+          in="$2"
+          shift
+        fi;;
+    -o | --output) 
+        opterr="$(chk_opt ${2})"
+        if [ $opterr ==  'true' ]
+        then
+          echo "Error: Missing parameter."
+          exit 5
+        else
+          out=${2}
+          shift
+        fi;;
+    -d | --database) 
+        opterr="$(chk_opt ${2})"
+        if [ $opterr ==  'true' ]
+        then
+          echo "Error: Missing parameter."
+          exit 5
+        else
+          database=${2}
+          shift
+        fi;;
     --help)  
         usage false
         exit 0;;
     *) usage true;; 
   esac
+  # End of Case
   shift
 done
+# End of While
 
-if [ -z "${collection}" ] || [ -z "${passw}" ] || [ -z "${uname}" ] 
+if [ -z "${collection}" ]  
 then
-  echo "Missing required parameters"
+  echo "Missing required parameter"
   usage true
   exit 1
 fi
@@ -87,11 +181,11 @@ then
 fi
 if [ -z "${in}" ]
 then
-  in="/mnt/data/xfer/input"
+  in="/mnt/data/heatmaps/input"
 fi
 if [ -z "${out}" ]
 then
-  out="/mnt/data/xfer/output"
+  out="/mnt/data/heatmaps/output"
 fi
 if [ -z "${port}" ]
 then
@@ -102,12 +196,53 @@ then
   database="camic"
 fi
 
+# Check that input and output folders exist.  
+if [ ! -d "/mnt/data/heatmaps/${in}" ]
+then
+  echo "Error: Input folder does not exist."
+  exit 2
+fi
+if [ ! -d "/mnt/data/heatmaps/${out}" ]
+then
+  echo "Error: Output folder does not exist."
+  exit 3
+fi
+
+# Check that manifest file exists
+if [ ! -f "/mnt/data/heatmaps/${in}/${manifest}" ]
+then
+  echo "Error: Manifest does not exist."
+  exit 2
+fi
+
+# Request username and password for upload.
+uname="$(getPrompt 'Username:')"
+passw="$(getPass 'Password:')"
+echo 
+echo
+
+# Verify that PathDB Server is reachable using current username/password combo
+ret_code="$(curl -Is http://${qhost}/ | head -1  | awk '{ print $2 }')"
+if [ ! $ret_code -lt 400 ]
+then
+  echo "Error: PathDB Server is unreachable."
+  exit 100
+fi
+
 # Convert heatmap data in the 'in' folder into uploadable json in the 'out' folder.
 node --max_old_space_size=16384 /usr/local/bin/convert_heatmaps.js -h ${qhost} -c ${collection} -m ${manifest} -i ${in} -o ${out} -u ${uname} -p ${passw}
+exitStatus=$?
+# Check to see conversion process succeeded.
+if [[ $exitStatus -eq 0 ]]
+then
+  # Import into the quip database
+  for filename in ${out}/*.json ; do
+    mongoimport --port ${port} --host ${host} -d ${database} -c heatmap ${filename}
+  done
+else
+  rm -f ${out}/*
+  exit $exitStatus
+fi
 
-# Import into the quip database
-for filename in ${out}/*.json ; do
-  mongoimport --port ${port} --host ${host} -d ${database} -c heatmap ${filename}
-done
-
+# exit normally
 exit 0
