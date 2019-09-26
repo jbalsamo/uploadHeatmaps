@@ -235,12 +235,13 @@ exitStatus=$?
 # Check to see conversion process succeeded.
 if [[ $exitStatus -eq 0 ]]
 then
+  uploadDir="/mnt/data/heatmaps/${out}"
   # Import into the quip database
-  for filename in ${out}/*.json ; do
+  for filename in ${uploadDir}/*.json ; do
     mongoimport --port ${port} --host ${host} -d ${database} -c heatmap ${filename}
   done
 else
-  rm -f ${out}/*
+  rm -f ${uploadDir}/*
   exit $exitStatus
 fi
 
