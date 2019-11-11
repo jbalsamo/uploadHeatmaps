@@ -186,6 +186,7 @@ function convert(filename,metadata){
           process.exit(50);
         }
         if(result.length<1 || result[0].nid.length <1 || !(result[0].nid[0].value)) {
+          console.info("Error: No data for " , study_id, image_id, subject_id)
           console.error('Error: PathDB Result formatted unexpectedly, return info given to follow. ');
           console.info(JSON.stringify(result))
           process.exit(50);
