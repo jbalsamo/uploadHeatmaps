@@ -4,12 +4,12 @@
 //              old heatmap format for loading into a 3.x or >
 //              pathdb quip instance. Parameters have been error
 //              checked by this point and sill be correct.
-// Author(s):  Ryan Birmingham, Joseph Balsamo
+// Author(s):  Nan Li, Joseph Balsamo
 //--------------------------------------------------------------
 
 
 //--------------------------------------------------------------
-// Constants and Variables 
+// Constants and Variables
 //--------------------------------------------------------------
 
 const http = require('http');
@@ -159,7 +159,7 @@ function convert(filename,metadata){
     var subject_id = metadata.subject_id;
 
     url = encodeURI(url);
-  
+
     var options = {
       host: url,
       port: 80,
@@ -168,7 +168,7 @@ function convert(filename,metadata){
       headers: {
         // Authorization: 'Basic <calculated key>',
         Authorization: 'Basic ' + Buffer.from(clio.username + ':' + clio.passw).toString('base64')
-      }   
+      }
     };
 
     // this is the call to retrieve the slides unique identifier from pathDB
@@ -183,6 +183,11 @@ function convert(filename,metadata){
         // Check if no results are returned.
         if(result == [] || !result) {
           console.error('Error: No data for ' + image_id);
+          process.exit(50);
+        }
+        if(result.length<1 || result[0].nid.length <1 || !(result[0].nid[0].value)) {
+          console.error('Error: PathDB Result formatted unexpectedly, return info given to follow. ');
+          console.info(JSON.stringify(result))
           process.exit(50);
         }
         // Set slide_id for the given parameters above.
@@ -229,15 +234,15 @@ function generateDoc(pdata,filename,metadata){
 
 
   return `{
-    "provenance":{  
-      "image":{  
+    "provenance":{
+      "image":{
         "subject_id":"${metadata.subject_id}",
         "case_id":"${metadata.image_id}",
-        "slide": "${slide_id}", 
-        "specimen": "", 
+        "slide": "${slide_id}",
+        "specimen": "",
         "study": ""
       },
-      "analysis":{  
+      "analysis":{
         "study_id":"${metadata.study_id}",
         "computation":"heatmap",
         "size": [${width},${height}],
