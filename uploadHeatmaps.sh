@@ -19,8 +19,8 @@ source readpass.sh
 
 #---------------------------------------------------
 # Function: usage(brief)
-# Description: Display help message.  When true is passed 
-#              it will show a brief version showing the 
+# Description: Display help message.  When true is passed
+#              it will show a brief version showing the
 #              bare minimum flags needed.
 # parameters: brief
 # usage: usage [true | false]
@@ -69,7 +69,7 @@ do
   # Process command-line flags
   # Start Case
   case "$1" in
-    -q | --quip-host) 
+    -q | --quip-host)
         opterr="$(chk_opt ${2})"
         if [ $opterr ==  'true' ]
         then
@@ -79,7 +79,7 @@ do
           qhost="$2"
           shift
         fi;;
-    -h | --data-host) 
+    -h | --data-host)
         opterr="$(chk_opt ${2})"
         if [ $opterr ==  'true' ]
         then
@@ -89,7 +89,7 @@ do
           host="$2"
           shift
         fi;;
-    -p | --port) 
+    -p | --port)
         opterr="$(chk_opt ${2})"
         if [ $opterr ==  'true' ]
         then
@@ -99,7 +99,7 @@ do
           port="$2"
           shift
         fi;;
-    -c | --collection) 
+    -c | --collection)
         opterr="$(chk_opt ${2})"
         if [ $opterr ==  'true' ]
         then
@@ -109,7 +109,7 @@ do
           collection="$2"
           shift
         fi;;
-    -m | --manifest) 
+    -m | --manifest)
         opterr="$(chk_opt ${2})"
         if [ $opterr ==  'true' ]
         then
@@ -119,7 +119,7 @@ do
           manifest="$2"
           shift
         fi;;
-    -i | --input) 
+    -i | --input)
         opterr="$(chk_opt ${2})"
         if [ $opterr ==  'true' ]
         then
@@ -129,7 +129,7 @@ do
           in="$2"
           shift
         fi;;
-    -o | --output) 
+    -o | --output)
         opterr="$(chk_opt ${2})"
         if [ $opterr ==  'true' ]
         then
@@ -139,7 +139,7 @@ do
           out=${2}
           shift
         fi;;
-    -d | --database) 
+    -d | --database)
         opterr="$(chk_opt ${2})"
         if [ $opterr ==  'true' ]
         then
@@ -149,17 +149,17 @@ do
           database=${2}
           shift
         fi;;
-    --help)  
+    --help)
         usage false
         exit 0;;
-    *) usage true;; 
+    *) usage true;;
   esac
   # End of Case
   shift
 done
 # End of While
 
-if [ -z "${collection}" ]  
+if [ -z "${collection}" ]
 then
   echo "Missing required parameter"
   usage true
@@ -196,7 +196,7 @@ then
   database="camic"
 fi
 
-# Check that input and output folders exist.  
+# Check that input and output folders exist.
 if [ ! -d "/mnt/data/heatmaps/${in}" ]
 then
   echo "Error: Input folder does not exist."
@@ -218,7 +218,7 @@ fi
 # Request username and password for upload.
 uname="$(getPrompt 'Username:')"
 passw="$(getPass 'Password:')"
-echo 
+echo
 echo
 
 # Verify that PathDB Server is reachable using current username/password combo
@@ -232,16 +232,17 @@ fi
 # Convert heatmap data in the 'in' folder into uploadable json in the 'out' folder.
 node --max_old_space_size=16384 /usr/local/bin/convert_heatmaps.js -h ${qhost} -c ${collection} -m ${manifest} -i ${in} -o ${out} -u ${uname} -p ${passw}
 exitStatus=$?
+uploadDir="/mnt/data/heatmaps/${out}"
 # Check to see conversion process succeeded.
 if [[ $exitStatus -eq 0 ]]
 then
-  uploadDir="/mnt/data/heatmaps/${out}"
   # Import into the quip database
   for filename in ${uploadDir}/*.json ; do
     mongoimport --port ${port} --host ${host} -d ${database} -c heatmap ${filename}
   done
 else
-  rm -f ${uploadDir}/*
+  # Slightly safer delete
+  rm -f ${uploadDir}/*.json
   exit $exitStatus
 fi
 
