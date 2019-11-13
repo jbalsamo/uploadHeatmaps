@@ -11,18 +11,18 @@ Under the input directory "_import folder_", with the heatmap files, you need to
 To load the current input files with a manifest named "manifest.csv":
 
 ```bash
-[ root@b93a23bb7fa1:~ ]$ uploadHeatmaps.sh -c <PathDB Collection> [option]
+[ root@dockhost:~ ]$ docker exec -it quip-hmloader uploadHeatmaps.sh -c <PathDB Collection>  -i <input folder> -o <output folder> [options]
 ```
 
 For the full usage info type:
 
 ```bash
 bash-3.2$ ~/uploadHeatmaps/uploadHeatmaps.sh --help
-Usage: $ uploadHeatmaps.sh [options] -c <pathDB_collection>
+Usage: $ uploadHeatmaps.sh [options] -c <pathDB_collection> -i <input folder> -o <output folder>
   Options:
     -c, --collection <pathDB_collection>: PathDB Collection for heatmaps (*this parameter required)
-    -i, --input <input_folder>: Folder where heatmaps are loaded from (default: input)
-    -o, --output <output_folder>: Folder where converted heatmaps are imported from (default: output)
+    -i, --input <input_folder>: Folder where heatmaps are loaded from (*this parameter required)
+    -o, --output <output_folder>: Folder where converted heatmaps are imported from (*this parameter required)
     -q, --quip-host <host>: ip or hostname of PathDB Server (default: quip-pathdb)
     -h, --data-host <host>: ip or hostname of database (default: ca-mongo)
     -m, --manifest <manifest name> (default: manifest.csv)
