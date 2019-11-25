@@ -222,7 +222,7 @@ echo
 echo
 
 # Verify that PathDB Server is reachable using current username/password combo
-ret_code="$(curl -Is http://${qhost}/ | head -1  | awk '{ print $2 }')"
+ret_code="$(curl -Is http://${qhost}/user | head -1  | awk '{ print $2 }')"
 if [ ! $ret_code -lt 400 ]
 then
   echo "Error: PathDB Server is unreachable."
