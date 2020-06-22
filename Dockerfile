@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:bionic
 LABEL maintainer="joseph.balsamo@stonybrook.edu"
 #
 # QuIP - Heatmap Loader Docker Container
