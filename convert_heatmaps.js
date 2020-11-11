@@ -73,7 +73,7 @@ url = clio.host;
 const fileTemps = {};
 var manifest = [];
 const mfData = []
-manifest = fs.readFileSync(inputFolder + '/' + clio.manifest).toString().split('\n');
+manifest = fs.readFileSync(inputFolder + '/' + clio.manifest).toString().split('\r\n');
 
 console.log('Reading manifest file.');
 
@@ -163,7 +163,7 @@ function convert(filename,metadata){
     var options = {
       host: url,
       port: 80,
-      path: '/idlookup/' + clio.collection + '/' + study_id + '/' + subject_id + '/' + image_id + '?_format=json',
+      path: encodeURI('/idlookup/' + clio.collection + '/' + study_id + '/' + subject_id + '/' + image_id + '?_format=json'),
       // authentication headers
       headers: {
         // Authorization: 'Basic <calculated key>',
