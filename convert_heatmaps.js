@@ -73,7 +73,7 @@ url = clio.host;
 const fileTemps = {};
 var manifest = [];
 const mfData = []
-manifest = fs.readFileSync(inputFolder + '/' + clio.manifest).toString().split('\r\n');
+manifest = fs.readFileSync(inputFolder + '/' + clio.manifest).toString().split(/\r\n|\n/);
 
 console.log('Reading manifest file.');
 
